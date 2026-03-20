@@ -12,7 +12,6 @@
   body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;}
   body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 80% 10%,rgba(108,99,255,0.1),transparent 55%);pointer-events:none;}
 
-  /* TOPBAR */
   .topbar{position:fixed;top:0;left:0;right:0;z-index:100;height:60px;background:rgba(8,8,16,0.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:16px;padding:0 24px;}
   .logo{display:flex;align-items:center;gap:8px;text-decoration:none;}
   .logo-icon{width:32px;height:32px;background:linear-gradient(135deg,var(--accent),var(--red));border-radius:8px;display:flex;align-items:center;justify-content:center;}
@@ -23,53 +22,58 @@
   .back-btn{text-decoration:none;color:var(--text2);font-size:14px;display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;transition:.15s;}
   .back-btn:hover{background:var(--surface);color:var(--text);}
 
-  .page{max-width:900px;margin:0 auto;padding:80px 24px 60px;}
-  .page-header{margin-bottom:32px;}
+  .page{max-width:860px;margin:0 auto;padding:80px 24px 60px;}
   .page-title{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;margin-bottom:6px;}
-  .page-sub{color:var(--text2);font-size:14px;}
+  .page-sub{color:var(--text2);font-size:14px;margin-bottom:32px;}
 
-  /* UPLOAD STEPS */
-  .steps{display:flex;align-items:center;gap:0;margin-bottom:36px;}
+  /* STEPS */
+  .steps{display:flex;align-items:center;margin-bottom:36px;}
   .step{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600;color:var(--text3);}
   .step.active{color:var(--text);}
   .step.done{color:var(--green);}
-  .step-num{width:28px;height:28px;border-radius:50%;background:var(--surface);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;border:1px solid var(--border);}
+  .step-num{width:28px;height:28px;border-radius:50%;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;}
   .step.active .step-num{background:var(--accent);border-color:var(--accent);color:white;}
   .step.done .step-num{background:var(--green);border-color:var(--green);color:white;}
-  .step-line{flex:1;height:1px;background:var(--border);min-width:30px;}
+  .step-line{flex:1;height:1px;background:var(--border);min-width:24px;}
 
-  /* PANELS */
   .panel{display:none;}
   .panel.active{display:block;}
 
-  /* DROP ZONE */
-  .drop-zone{border:2px dashed var(--border);border-radius:20px;padding:60px 40px;text-align:center;cursor:pointer;transition:.3s;position:relative;background:rgba(108,99,255,0.03);}
-  .drop-zone:hover,.drop-zone.dragover{border-color:var(--accent);background:rgba(108,99,255,0.08);}
-  .drop-icon{width:64px;height:64px;margin:0 auto 16px;background:linear-gradient(135deg,rgba(108,99,255,0.2),rgba(255,71,87,0.1));border-radius:50%;display:flex;align-items:center;justify-content:center;}
-  .drop-title{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;margin-bottom:8px;}
-  .drop-sub{color:var(--text2);font-size:14px;margin-bottom:20px;}
-  .drop-btn{background:var(--accent);color:white;border:none;padding:12px 28px;border-radius:var(--radius);font-family:'Syne',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:.2s;}
+  /* STEP 1 — DROP ZONE */
+  .drop-zone{border:2px dashed var(--border);border-radius:20px;padding:70px 40px;text-align:center;cursor:pointer;transition:.3s;background:rgba(108,99,255,0.03);}
+  .drop-zone:hover,.drop-zone.over{border-color:var(--accent);background:rgba(108,99,255,0.08);}
+  .drop-icon{width:72px;height:72px;margin:0 auto 20px;background:linear-gradient(135deg,rgba(108,99,255,0.25),rgba(255,71,87,0.15));border-radius:50%;display:flex;align-items:center;justify-content:center;}
+  .drop-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:8px;}
+  .drop-sub{color:var(--text2);font-size:14px;margin-bottom:24px;}
+  .drop-btn{background:var(--accent);color:white;border:none;padding:13px 32px;border-radius:var(--radius);font-family:'Syne',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:.2s;}
   .drop-btn:hover{background:var(--accent2);}
-  .drop-formats{font-size:12px;color:var(--text3);margin-top:12px;}
-  input[type=file]{display:none;}
+  .drop-note{font-size:12px;color:var(--text3);margin-top:16px;line-height:1.7;}
+  .drop-note strong{color:var(--text2);}
 
-  /* VIDEO PREVIEW */
-  .video-preview-wrap{border-radius:var(--radius);overflow:hidden;background:#000;aspect-ratio:16/9;margin-bottom:20px;position:relative;}
-  .video-preview-wrap video{width:100%;height:100%;object-fit:contain;}
-  .video-preview-wrap .vid-name{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,0.8));padding:20px 16px 12px;font-size:13px;color:rgba(255,255,255,0.8);}
+  /* SIZE WARNING */
+  .size-warn{background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);color:#fbbf24;font-size:13px;padding:12px 16px;border-radius:10px;margin-top:16px;display:none;line-height:1.5;}
+  .size-warn.show{display:block;}
+
+  /* STEP 2 — DETAILS */
+  .preview-row{display:flex;align-items:center;gap:12px;margin-bottom:20px;background:var(--surface);border-radius:var(--radius);padding:12px 16px;border:1px solid var(--border);}
+  .preview-thumb{width:80px;height:45px;border-radius:8px;overflow:hidden;background:var(--bg);flex-shrink:0;}
+  .preview-thumb video{width:100%;height:100%;object-fit:cover;}
+  .preview-info{flex:1;min-width:0;}
+  .preview-filename{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .preview-size{font-size:12px;color:var(--text3);margin-top:2px;}
+  .change-btn{background:none;border:1px solid var(--border);color:var(--text2);padding:6px 12px;border-radius:8px;font-size:12px;cursor:pointer;flex-shrink:0;transition:.15s;}
+  .change-btn:hover{background:var(--surface2);color:var(--text);}
 
   /* PROGRESS */
-  .upload-progress{margin-bottom:20px;}
-  .progress-label{display:flex;justify-content:space-between;font-size:13px;color:var(--text2);margin-bottom:6px;}
-  .progress-track{height:6px;background:var(--surface);border-radius:3px;overflow:hidden;}
-  .progress-bar{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:3px;transition:width .3s;}
+  .encode-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:20px;}
+  .encode-label{display:flex;justify-content:space-between;font-size:13px;color:var(--text2);margin-bottom:8px;}
+  .encode-track{height:8px;background:var(--surface2);border-radius:4px;overflow:hidden;}
+  .encode-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:4px;transition:width .2s;}
+  .encode-status{font-size:12px;color:var(--text3);margin-top:6px;}
 
-  /* DETAILS FORM */
-  .form-grid{display:grid;grid-template-columns:1fr 260px;gap:24px;}
-  @media(max-width:700px){.form-grid{grid-template-columns:1fr;}}
-  .form-left{}
-  .form-right{}
-
+  .form-card{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:28px;}
+  .form-grid{display:grid;grid-template-columns:1fr 240px;gap:24px;}
+  @media(max-width:680px){.form-grid{grid-template-columns:1fr;}}
   .field{margin-bottom:18px;}
   .field label{display:block;font-size:13px;font-weight:600;color:var(--text2);margin-bottom:6px;}
   .field input,.field textarea,.field select{width:100%;background:var(--surface);border:1px solid var(--border);color:var(--text);padding:11px 14px;border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:.2s;}
@@ -78,23 +82,21 @@
   .char-count{font-size:11px;color:var(--text3);text-align:right;margin-top:3px;}
   .field select option{background:var(--bg2);}
 
-  /* THUMBNAIL */
-  .thumb-zone{aspect-ratio:16/9;border-radius:var(--radius);border:2px dashed var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;transition:.2s;overflow:hidden;position:relative;background:var(--surface);}
+  .thumb-zone{aspect-ratio:16/9;border-radius:var(--radius);border:2px dashed var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;overflow:hidden;position:relative;background:var(--surface);transition:.2s;}
   .thumb-zone:hover{border-color:var(--accent);}
   .thumb-zone img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;}
-  .thumb-zone-label{font-size:12px;font-weight:600;color:var(--text3);text-align:center;padding:8px;position:relative;z-index:1;}
-  .thumb-zone.has-img .thumb-zone-label{background:rgba(0,0,0,0.6);color:white;border-radius:6px;}
+  .thumb-label{font-size:12px;font-weight:600;color:var(--text3);text-align:center;padding:8px;position:relative;z-index:1;}
+  .thumb-zone.has-img .thumb-label{background:rgba(0,0,0,0.55);color:white;border-radius:6px;}
 
   .tags-input{display:flex;flex-wrap:wrap;gap:6px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:8px 12px;min-height:44px;cursor:text;transition:.2s;}
-  .tags-input:focus-within{border-color:var(--accent);background:var(--surface2);}
+  .tags-input:focus-within{border-color:var(--accent);}
   .tag-chip{background:rgba(108,99,255,0.2);color:var(--accent2);padding:3px 10px;border-radius:20px;font-size:13px;display:flex;align-items:center;gap:5px;}
-  .tag-chip-remove{background:none;border:none;color:var(--accent2);cursor:pointer;font-size:16px;line-height:1;padding:0;}
-  .tags-inner-input{border:none;background:transparent;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;flex:1;min-width:80px;}
-  .tags-inner-input::placeholder{color:var(--text3);}
+  .tag-remove{background:none;border:none;color:var(--accent2);cursor:pointer;font-size:15px;line-height:1;padding:0;}
+  .tag-typer{border:none;background:transparent;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;flex:1;min-width:80px;}
+  .tag-typer::placeholder{color:var(--text3);}
 
-  /* SUBMIT */
   .submit-row{display:flex;gap:12px;justify-content:flex-end;margin-top:24px;}
-  .cancel-btn{background:var(--surface);color:var(--text2);border:1px solid var(--border);padding:12px 24px;border-radius:var(--radius);font-size:14px;font-weight:600;cursor:pointer;transition:.2s;text-decoration:none;display:flex;align-items:center;}
+  .cancel-btn{background:var(--surface);color:var(--text2);border:1px solid var(--border);padding:12px 24px;border-radius:var(--radius);font-size:14px;font-weight:600;cursor:pointer;transition:.2s;text-decoration:none;display:inline-flex;align-items:center;}
   .cancel-btn:hover{background:var(--surface2);color:var(--text);}
   .publish-btn{background:linear-gradient(135deg,var(--accent),#5a52e0);color:white;border:none;padding:12px 32px;border-radius:var(--radius);font-family:'Syne',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:.2s;}
   .publish-btn:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(108,99,255,0.35);}
@@ -103,19 +105,22 @@
   .error-box{background:rgba(255,71,87,0.1);border:1px solid rgba(255,71,87,0.3);color:#ff6b7a;font-size:13px;padding:12px 16px;border-radius:10px;margin-bottom:16px;display:none;}
   .error-box.show{display:block;}
 
-  /* SUCCESS */
+  /* STEP 3 — SUCCESS */
   .success-panel{text-align:center;padding:60px 20px;}
   .success-icon{width:80px;height:80px;background:rgba(34,197,94,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;}
   .success-title{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;margin-bottom:8px;}
   .success-sub{color:var(--text2);font-size:15px;margin-bottom:28px;}
   .success-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
-  .btn-primary{background:var(--accent);color:white;text-decoration:none;padding:12px 28px;border-radius:var(--radius);font-weight:700;font-size:14px;transition:.2s;}
-  .btn-primary:hover{background:var(--accent2);}
-  .btn-sec{background:var(--surface);color:var(--text2);text-decoration:none;padding:12px 28px;border-radius:var(--radius);font-weight:600;font-size:14px;border:1px solid var(--border);transition:.2s;}
-  .btn-sec:hover{background:var(--surface2);color:var(--text);}
+  .btn-p{background:var(--accent);color:white;text-decoration:none;padding:12px 28px;border-radius:var(--radius);font-weight:700;font-size:14px;transition:.2s;}
+  .btn-p:hover{background:var(--accent2);}
+  .btn-s{background:var(--surface);color:var(--text2);text-decoration:none;padding:12px 28px;border-radius:var(--radius);font-weight:600;font-size:14px;border:1px solid var(--border);transition:.2s;}
+  .btn-s:hover{background:var(--surface2);color:var(--text);}
+
+  input[type=file]{display:none;}
 </style>
 </head>
 <body>
+
 <header class="topbar">
   <a href="index.html" class="logo">
     <div class="logo-icon"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
@@ -130,110 +135,133 @@
 </header>
 
 <div class="page">
-  <div class="page-header">
-    <div class="page-title">Upload a Video</div>
-    <div class="page-sub">Share your content with the world</div>
-  </div>
+  <div class="page-title">Upload a Video</div>
+  <div class="page-sub">Select a video file — it gets saved in your browser so it always plays back</div>
 
   <!-- STEPS -->
   <div class="steps">
-    <div class="step active" id="step1"><div class="step-num">1</div> Select File</div>
+    <div class="step active" id="step1"><div class="step-num" id="sn1">1</div> Select File</div>
     <div class="step-line"></div>
-    <div class="step" id="step2"><div class="step-num">2</div> Details</div>
+    <div class="step" id="step2"><div class="step-num" id="sn2">2</div> Details</div>
     <div class="step-line"></div>
-    <div class="step" id="step3"><div class="step-num">3</div> Published</div>
+    <div class="step" id="step3"><div class="step-num" id="sn3">3</div> Published</div>
   </div>
 
   <!-- PANEL 1: FILE SELECT -->
   <div class="panel active" id="panel1">
     <div class="drop-zone" id="dropZone"
-      ondragover="e=>{e.preventDefault();document.getElementById('dropZone').classList.add('dragover')}"
-      ondragleave="document.getElementById('dropZone').classList.remove('dragover')"
+      ondragover="event.preventDefault();this.classList.add('over')"
+      ondragleave="this.classList.remove('over')"
       ondrop="handleDrop(event)"
       onclick="document.getElementById('videoFile').click()">
       <div class="drop-icon">
-        <svg width="30" height="30" fill="none" stroke="white" stroke-width="1.5" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <svg width="32" height="32" fill="none" stroke="white" stroke-width="1.5" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
       </div>
-      <div class="drop-title">Drag & drop your video here</div>
+      <div class="drop-title">Drop your video here</div>
       <div class="drop-sub">or click to browse from your computer</div>
-      <button class="drop-btn" type="button">Select Video File</button>
-      <div class="drop-formats">Supports MP4, WebM, MOV, AVI · Max 2GB</div>
+      <button class="drop-btn" type="button" onclick="event.stopPropagation();document.getElementById('videoFile').click()">
+        Choose Video File
+      </button>
+      <div class="drop-note">
+        Supported: <strong>MP4, WebM, MOV, AVI</strong><br>
+        The video is stored in your browser's local storage.<br>
+        <strong>Keep files under 50MB</strong> for best results.
+      </div>
+    </div>
+    <div class="size-warn" id="sizeWarn">
+      ⚠️ <strong>File is large (over 50MB).</strong> It may still work but could be slow to save or hit browser storage limits. Consider trimming the video first.
     </div>
     <input type="file" id="videoFile" accept="video/*" onchange="handleFileSelect(this.files[0])">
   </div>
 
   <!-- PANEL 2: DETAILS -->
   <div class="panel" id="panel2">
-    <div class="video-preview-wrap">
-      <video id="videoPreview" controls></video>
-      <div class="vid-name" id="vidName"></div>
+    <!-- Mini preview row -->
+    <div class="preview-row">
+      <div class="preview-thumb">
+        <video id="miniPreview" muted></video>
+      </div>
+      <div class="preview-info">
+        <div class="preview-filename" id="previewFilename">video.mp4</div>
+        <div class="preview-size" id="previewSize"></div>
+      </div>
+      <button class="change-btn" onclick="goBack()">Change file</button>
     </div>
 
-    <div class="upload-progress" id="uploadProgressWrap" style="display:none">
-      <div class="progress-label"><span id="progressLabel">Processing…</span><span id="progressPct">0%</span></div>
-      <div class="progress-track"><div class="progress-bar" id="progressBar" style="width:0%"></div></div>
+    <!-- Encoding progress -->
+    <div class="encode-box" id="encodeBox">
+      <div class="encode-label">
+        <span id="encodeLabel">Reading video…</span>
+        <span id="encodePct">0%</span>
+      </div>
+      <div class="encode-track"><div class="encode-fill" id="encodeFill" style="width:0%"></div></div>
+      <div class="encode-status" id="encodeStatus">Saving to browser storage…</div>
     </div>
 
     <div class="error-box" id="errorBox"></div>
 
-    <div class="form-grid">
-      <div class="form-left">
-        <div class="field">
-          <label>Title *</label>
-          <input type="text" id="vidTitle" placeholder="Give your video an eye-catching title" maxlength="100" oninput="updateCharCount('vidTitle','titleCount',100)">
-          <div class="char-count"><span id="titleCount">0</span>/100</div>
-        </div>
-        <div class="field">
-          <label>Description</label>
-          <textarea id="vidDesc" placeholder="Tell viewers about your video…" rows="5" maxlength="500" oninput="updateCharCount('vidDesc','descCount',500)"></textarea>
-          <div class="char-count"><span id="descCount">0</span>/500</div>
-        </div>
-        <div class="field">
-          <label>Tags</label>
-          <div class="tags-input" id="tagsInput" onclick="document.getElementById('tagTyper').focus()">
-            <input class="tags-inner-input" id="tagTyper" placeholder="Add tags, press Enter or comma…" onkeydown="handleTagKey(event)">
+    <div class="form-card">
+      <div class="form-grid">
+        <div>
+          <div class="field">
+            <label>Title *</label>
+            <input type="text" id="vidTitle" placeholder="Give your video a great title" maxlength="100"
+              oninput="document.getElementById('titleCount').textContent=this.value.length">
+            <div class="char-count"><span id="titleCount">0</span>/100</div>
           </div>
-          <div class="char-count">Press Enter or comma to add a tag</div>
-        </div>
-        <div class="field">
-          <label>Category</label>
-          <select id="vidCategory">
-            <option value="Technology">Technology</option>
-            <option value="Music">Music</option>
-            <option value="Gaming">Gaming</option>
-            <option value="Documentary">Documentary</option>
-            <option value="Lifestyle">Lifestyle</option>
-            <option value="Film">Film</option>
-            <option value="Education">Education</option>
-            <option value="Comedy">Comedy</option>
-            <option value="Sports">Sports</option>
-            <option value="News">News</option>
-            <option value="Other">Other</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-right">
-        <div class="field">
-          <label>Thumbnail</label>
-          <div class="thumb-zone" id="thumbZone" onclick="document.getElementById('thumbFile').click()">
-            <img id="thumbPreview" src="" alt="" style="display:none">
-            <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" style="color:var(--text3)"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-            <div class="thumb-zone-label">Click to upload thumbnail<br><span style="font-weight:400;font-size:11px">16:9 recommended</span></div>
+          <div class="field">
+            <label>Description</label>
+            <textarea id="vidDesc" placeholder="What is this video about?" rows="4" maxlength="500"
+              oninput="document.getElementById('descCount').textContent=this.value.length"></textarea>
+            <div class="char-count"><span id="descCount">0</span>/500</div>
           </div>
-          <input type="file" id="thumbFile" accept="image/*" onchange="loadThumb(this)">
+          <div class="field">
+            <label>Tags <span style="color:var(--text3);font-weight:400">(Enter or comma)</span></label>
+            <div class="tags-input" id="tagsBox" onclick="document.getElementById('tagTyper').focus()">
+              <input class="tag-typer" id="tagTyper" placeholder="Add tags…" onkeydown="handleTagKey(event)">
+            </div>
+          </div>
+          <div class="field">
+            <label>Category</label>
+            <select id="vidCategory">
+              <option value="Technology">Technology</option>
+              <option value="Music">Music</option>
+              <option value="Gaming">Gaming</option>
+              <option value="Documentary">Documentary</option>
+              <option value="Lifestyle">Lifestyle</option>
+              <option value="Film">Film</option>
+              <option value="Education">Education</option>
+              <option value="Comedy">Comedy</option>
+              <option value="Sports">Sports</option>
+              <option value="News">News</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
         </div>
-        <div style="background:var(--surface);border-radius:var(--radius);padding:14px;font-size:12px;color:var(--text2);line-height:1.6;border:1px solid var(--border)">
-          <div style="font-weight:600;color:var(--text);margin-bottom:6px">📋 Tips for great videos</div>
-          Write a clear, descriptive title.<br>
-          Add relevant tags to help discovery.<br>
-          A custom thumbnail increases clicks by up to 90%.
-        </div>
-      </div>
-    </div>
 
-    <div class="submit-row">
-      <a href="studio.html" class="cancel-btn">Cancel</a>
-      <button class="publish-btn" id="publishBtn" onclick="doPublish()">Publish Video</button>
+        <div>
+          <div class="field">
+            <label>Thumbnail</label>
+            <div class="thumb-zone" id="thumbZone" onclick="document.getElementById('thumbFile').click()">
+              <img id="thumbPreview" src="" alt="" style="display:none">
+              <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" style="color:var(--text3)"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              <div class="thumb-label">Click to upload thumbnail<br><span style="font-weight:400;font-size:11px">16:9 · JPG or PNG</span></div>
+            </div>
+            <input type="file" id="thumbFile" accept="image/*" onchange="loadThumb(this)">
+          </div>
+          <div style="background:var(--surface);border-radius:var(--radius);padding:14px;font-size:12px;color:var(--text2);line-height:1.7;border:1px solid var(--border);">
+            <div style="font-weight:700;color:var(--text);margin-bottom:6px">💾 How storage works</div>
+            Your video is saved as base64 data directly in your browser's localStorage. It will keep playing even after you refresh — as long as you don't clear your browser data.
+          </div>
+        </div>
+      </div>
+
+      <div class="submit-row">
+        <a href="studio.html" class="cancel-btn">Cancel</a>
+        <button class="publish-btn" id="publishBtn" onclick="doPublish()" disabled>
+          Saving video…
+        </button>
+      </div>
     </div>
   </div>
 
@@ -244,11 +272,11 @@
         <svg width="40" height="40" fill="none" stroke="#22c55e" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
       </div>
       <div class="success-title">Your video is live! 🎉</div>
-      <div class="success-sub">It's now visible on ViewTube for everyone to watch.</div>
+      <div class="success-sub">Saved to your browser — it will keep playing on this device.</div>
       <div class="success-actions">
-        <a href="#" class="btn-primary" id="watchVideoBtn">Watch Video</a>
-        <a href="studio.html" class="btn-sec">Go to Studio</a>
-        <a href="upload.html" class="btn-sec">Upload Another</a>
+        <a href="#" class="btn-p" id="watchBtn">Watch Video</a>
+        <a href="studio.html" class="btn-s">Studio</a>
+        <a href="upload.html" class="btn-s">Upload Another</a>
       </div>
     </div>
   </div>
@@ -256,145 +284,221 @@
 
 <script src="vt-auth.js"></script>
 <script>
-let videoFile = null;
+let videoBase64  = '';   // the full base64 data URL of the video
 let thumbDataUrl = '';
-let tags = [];
-let publishedVideoId = '';
+let tags         = [];
+let videoMime    = 'video/mp4';
 
 VT.initSeedData().then(() => {
   if (!VT.requireAuth('login.html?redirect=upload.html')) return;
   const user = VT.currentUser();
-  const ch = VT.getChannelByOwner(user.id);
-  if (!ch) { window.location.href = 'create-channel.html'; }
+  if (!VT.getChannelByOwner(user.id)) window.location.href = 'create-channel.html';
 });
 
+// ── STEP HELPERS ────────────────────────────────────────────────
 function setStep(n) {
   for (let i = 1; i <= 3; i++) {
-    const s = document.getElementById('step' + i);
-    const p = document.getElementById('panel' + i);
-    s.className = 'step' + (i < n ? ' done' : i === n ? ' active' : '');
-    p.className = 'panel' + (i === n ? ' active' : '');
-    if (i < n) s.querySelector('.step-num').innerHTML = '✓';
+    document.getElementById('step'  + i).className = 'step' + (i < n ? ' done' : i === n ? ' active' : '');
+    document.getElementById('panel' + i).className = 'panel' + (i === n ? ' active' : '');
+    const sn = document.getElementById('sn' + i);
+    sn.innerHTML = i < n ? '✓' : i;
   }
 }
 
+function goBack() {
+  videoBase64 = '';
+  setStep(1);
+}
+
+// ── FILE HANDLING ────────────────────────────────────────────────
 function handleDrop(e) {
   e.preventDefault();
-  document.getElementById('dropZone').classList.remove('dragover');
+  document.getElementById('dropZone').classList.remove('over');
   const file = e.dataTransfer.files[0];
   if (file && file.type.startsWith('video/')) handleFileSelect(file);
 }
 
 function handleFileSelect(file) {
   if (!file) return;
-  videoFile = file;
-  const url = URL.createObjectURL(file);
-  const vid = document.getElementById('videoPreview');
-  vid.src = url;
-  document.getElementById('vidName').textContent = file.name;
-  // Auto-fill title
+
+  // Warn if large
+  const mb = file.size / 1024 / 1024;
+  document.getElementById('sizeWarn').classList.toggle('show', mb > 50);
+
+  videoMime = file.type || 'video/mp4';
+
+  // Show step 2 immediately with filename + progress
+  document.getElementById('previewFilename').textContent = file.name;
+  document.getElementById('previewSize').textContent     = mb.toFixed(1) + ' MB';
+
+  // Mini video preview (blob URL — just for the preview thumbnail, not stored)
+  const blobUrl = URL.createObjectURL(file);
+  const mini    = document.getElementById('miniPreview');
+  mini.src      = blobUrl;
+
+  // Auto-fill title from filename
   document.getElementById('vidTitle').value = file.name.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' ');
-  updateCharCount('vidTitle', 'titleCount', 100);
+  document.getElementById('titleCount').textContent = document.getElementById('vidTitle').value.length;
+
   setStep(2);
 
-  // Simulate processing progress
-  const wrap = document.getElementById('uploadProgressWrap');
-  const bar = document.getElementById('progressBar');
-  const pct = document.getElementById('progressPct');
-  const label = document.getElementById('progressLabel');
-  wrap.style.display = 'block';
-  let p = 0;
-  const iv = setInterval(() => {
-    p += Math.random() * 12;
-    if (p >= 100) { p = 100; clearInterval(iv); label.textContent = 'Ready to publish'; }
-    bar.style.width = p + '%';
-    pct.textContent = Math.floor(p) + '%';
-  }, 150);
-}
+  // Disable publish until base64 is ready
+  const publishBtn = document.getElementById('publishBtn');
+  publishBtn.disabled = true;
+  publishBtn.textContent = 'Saving video…';
 
-function updateCharCount(inputId, countId, max) {
-  const val = document.getElementById(inputId).value.length;
-  document.getElementById(countId).textContent = val;
-}
+  // Read file as base64 using FileReader
+  const reader    = new FileReader();
+  const encodeBox = document.getElementById('encodeBox');
+  const fill      = document.getElementById('encodeFill');
+  const pct       = document.getElementById('encodePct');
+  const label     = document.getElementById('encodeLabel');
+  const status    = document.getElementById('encodeStatus');
 
-function handleTagKey(e) {
-  if (e.key === 'Enter' || e.key === ',') {
-    e.preventDefault();
-    const val = document.getElementById('tagTyper').value.trim().replace(/,/g, '');
-    if (val && !tags.includes(val) && tags.length < 10) {
-      tags.push(val);
-      renderTags();
+  encodeBox.style.display = 'block';
+  label.textContent  = 'Reading video file…';
+  status.textContent = 'Converting to browser storage format…';
+
+  reader.onprogress = e => {
+    if (e.lengthComputable) {
+      const p = Math.round((e.loaded / e.total) * 90);
+      fill.style.width = p + '%';
+      pct.textContent  = p + '%';
     }
-    document.getElementById('tagTyper').value = '';
-  }
-  if (e.key === 'Backspace' && !document.getElementById('tagTyper').value && tags.length) {
-    tags.pop(); renderTags();
-  }
+  };
+
+  reader.onload = e => {
+    fill.style.width  = '100%';
+    pct.textContent   = '100%';
+    label.textContent = 'Ready!';
+    status.textContent = 'Video saved to browser storage ✓';
+
+    videoBase64 = e.target.result; // full base64 data URL
+
+    publishBtn.disabled    = false;
+    publishBtn.textContent = 'Publish Video';
+  };
+
+  reader.onerror = () => {
+    label.textContent  = 'Error reading file';
+    status.textContent = 'Try a smaller file or different format.';
+  };
+
+  reader.readAsDataURL(file);
 }
 
-function renderTags() {
-  const container = document.getElementById('tagsInput');
-  const typer = document.getElementById('tagTyper');
-  container.innerHTML = '';
-  tags.forEach((t, i) => {
-    const chip = document.createElement('div');
-    chip.className = 'tag-chip';
-    chip.innerHTML = `${t}<button class="tag-chip-remove" onclick="removeTag(${i})">×</button>`;
-    container.appendChild(chip);
-  });
-  container.appendChild(typer);
-  typer.focus();
-}
-
-function removeTag(i) { tags.splice(i, 1); renderTags(); }
-
+// ── THUMBNAIL ───────────────────────────────────────────────────
 function loadThumb(input) {
   const file = input.files[0]; if (!file) return;
   const reader = new FileReader();
   reader.onload = e => {
     thumbDataUrl = e.target.result;
     const img = document.getElementById('thumbPreview');
-    img.src = thumbDataUrl; img.style.display = 'block';
+    img.src = thumbDataUrl;
+    img.style.display = 'block';
     document.getElementById('thumbZone').classList.add('has-img');
   };
   reader.readAsDataURL(file);
 }
 
-function showError(msg) {
-  const b = document.getElementById('errorBox');
-  b.textContent = msg; b.classList.add('show');
+// ── TAGS ────────────────────────────────────────────────────────
+function handleTagKey(e) {
+  if (e.key === 'Enter' || e.key === ',') {
+    e.preventDefault();
+    const val = document.getElementById('tagTyper').value.trim().replace(/,/g, '');
+    if (val && !tags.includes(val) && tags.length < 10) { tags.push(val); renderTags(); }
+    document.getElementById('tagTyper').value = '';
+  }
+  if (e.key === 'Backspace' && !document.getElementById('tagTyper').value && tags.length) {
+    tags.pop(); renderTags();
+  }
+}
+function renderTags() {
+  const box   = document.getElementById('tagsBox');
+  const typer = document.getElementById('tagTyper');
+  box.innerHTML = '';
+  tags.forEach((t, i) => {
+    const chip = document.createElement('div');
+    chip.className = 'tag-chip';
+    chip.innerHTML = `${t}<button class="tag-remove" onclick="removeTag(${i})">×</button>`;
+    box.appendChild(chip);
+  });
+  box.appendChild(typer);
+  typer.focus();
+}
+function removeTag(i) { tags.splice(i, 1); renderTags(); }
+
+// ── PUBLISH ─────────────────────────────────────────────────────
+function doPublish() {
+  const title    = document.getElementById('vidTitle').value.trim();
+  const desc     = document.getElementById('vidDesc').value.trim();
+  const category = document.getElementById('vidCategory').value;
+  const btn      = document.getElementById('publishBtn');
+
+  if (!title)      { showError('Please enter a title.'); return; }
+  if (!videoBase64){ showError('Video not ready yet — please wait.'); return; }
+
+  document.getElementById('errorBox').classList.remove('show');
+  btn.disabled    = true;
+  btn.textContent = 'Publishing…';
+
+  // Store the base64 video separately (videos can be large — we use a dedicated key)
+  const user = VT.currentUser();
+  const ch   = VT.getChannelByOwner(user.id);
+
+  // Generate the video id first so we can link the storage key
+  const videoId = 'v_' + VT.uid();
+  const storageKey = 'vt_video_data_' + videoId;
+
+  try {
+    localStorage.setItem(storageKey, videoBase64);
+  } catch(e) {
+    showError('Storage full! Try a smaller video file or clear some browser data.');
+    btn.disabled    = false;
+    btn.textContent = 'Publish Video';
+    return;
+  }
+
+  // Auto-generate thumbnail from video frame if none uploaded
+  const thumbnail = thumbDataUrl || autoThumb();
+
+  const result = VT.uploadVideoWithId({
+    id: videoId,
+    title, description: desc, tags, category,
+    thumbnail,
+    videoStorageKey: storageKey,   // watch.html reads from here
+    channelId:  ch.id,
+    uploaderId: user.id,
+  });
+
+  if (result.ok) {
+    document.getElementById('watchBtn').href = 'watch.html?id=' + videoId;
+    setStep(3);
+  } else {
+    showError('Failed to publish. Try again.');
+    btn.disabled    = false;
+    btn.textContent = 'Publish Video';
+  }
 }
 
-function doPublish() {
-  const title = document.getElementById('vidTitle').value.trim();
-  const desc = document.getElementById('vidDesc').value.trim();
-  const category = document.getElementById('vidCategory').value;
-  const btn = document.getElementById('publishBtn');
+// Try to grab a frame from the video as thumbnail
+function autoThumb() {
+  try {
+    const vid = document.getElementById('miniPreview');
+    const canvas = document.createElement('canvas');
+    canvas.width  = 640;
+    canvas.height = 360;
+    canvas.getContext('2d').drawImage(vid, 0, 0, 640, 360);
+    return canvas.toDataURL('image/jpeg', 0.8);
+  } catch(e) {
+    return 'https://picsum.photos/seed/' + Date.now() + '/640/360';
+  }
+}
 
-  if (!title) { showError('Please enter a video title.'); return; }
-  document.getElementById('errorBox').classList.remove('show');
-  btn.disabled = true; btn.textContent = 'Publishing…';
-
-  setTimeout(() => {
-    const user = VT.currentUser();
-    const ch = VT.getChannelByOwner(user.id);
-    const videoUrl = videoFile ? URL.createObjectURL(videoFile) : '';
-    const result = VT.uploadVideo({
-      title, description: desc, tags, category,
-      thumbnail: thumbDataUrl || `https://picsum.photos/seed/${Date.now()}/640/360`,
-      videoUrl,
-      channelId: ch.id,
-      uploaderId: user.id,
-    });
-    if (result.ok) {
-      publishedVideoId = result.video.id;
-      document.getElementById('watchVideoBtn').href = `watch.html?id=${publishedVideoId}`;
-      setStep(3);
-    } else {
-      showError('Failed to publish. Please try again.');
-      btn.disabled = false; btn.textContent = 'Publish Video';
-    }
-  }, 600);
+function showError(msg) {
+  const b = document.getElementById('errorBox');
+  b.textContent = msg;
+  b.classList.add('show');
 }
 </script>
 </body>
