@@ -74,20 +74,19 @@ const VT = (() => {
   }
 
   // ── SEED / INIT ───────────────────────────────────────────────
-  // Reads JSON files ONCE on first ever visit.
-  // After that localStorage is the only source of truth.
   async function initSeedData() {
-    // Ensure all user-data buckets exist regardless
     if (!store.get(KEYS.USERS))    store.set(KEYS.USERS, []);
     if (!store.get(KEYS.SUBS))     store.set(KEYS.SUBS, {});
     if (!store.get(KEYS.LIKES))    store.set(KEYS.LIKES, {});
     if (!store.get(KEYS.DISLIKES)) store.set(KEYS.DISLIKES, {});
     if (!store.get(KEYS.VIEWS))    store.set(KEYS.VIEWS, {});
 
-    // Already seeded — do nothing, localStorage has the live data
-    if (store.get(KEYS.SEEDED)) return;
+    // Skip only if seeded flag is set AND data actually exists
+    const videos   = store.get(KEYS.VIDEOS)   || [];
+    const channels = store.get(KEYS.CHANNELS) || [];
+    if (store.get(KEYS.SEEDED) && videos.length > 0 && channels.length > 0) return;
 
-    // First visit — fetch JSON seed files
+    // First visit OR data was empty — fetch JSON seed files
     try {
       const [ch, vid, sh, cmt] = await Promise.all([
         fetch('channels.json').then(r => r.json()).catch(() => []),
@@ -95,15 +94,27 @@ const VT = (() => {
         fetch('shorts.json').then(r => r.json()).catch(() => []),
         fetch('comments.json').then(r => r.json()).catch(() => ({})),
       ]);
-      store.set(KEYS.CHANNELS, ch);
-      store.set(KEYS.VIDEOS,   vid);
+
+      // Merge: keep any user-uploaded videos/channels, add seed data
+      const existingVideos   = store.get(KEYS.VIDEOS)   || [];
+      const existingChannels = store.get(KEYS.CHANNELS) || [];
+      const seedVidIds = vid.map(v => v.id);
+      const seedChIds  = ch.map(c => c.id);
+
+      // User-created entries (have ownerId or uploaderId) that aren't in seed
+      const userVideos   = existingVideos.filter(v => v.uploaderId && !seedVidIds.includes(v.id));
+      const userChannels = existingChannels.filter(c => c.ownerId   && !seedChIds.includes(c.id));
+
+      store.set(KEYS.CHANNELS, [...ch, ...userChannels]);
+      store.set(KEYS.VIDEOS,   [...vid, ...userVideos]);
       store.set(KEYS.SHORTS,   sh);
-      store.set(KEYS.COMMENTS, cmt);
+      // Only set comments if not already set (preserve user comments)
+      if (!store.get(KEYS.COMMENTS)) store.set(KEYS.COMMENTS, cmt);
     } catch (e) {
-      store.set(KEYS.CHANNELS, []);
-      store.set(KEYS.VIDEOS,   []);
-      store.set(KEYS.SHORTS,   []);
-      store.set(KEYS.COMMENTS, {});
+      if (!store.get(KEYS.CHANNELS)) store.set(KEYS.CHANNELS, []);
+      if (!store.get(KEYS.VIDEOS))   store.set(KEYS.VIDEOS, []);
+      if (!store.get(KEYS.SHORTS))   store.set(KEYS.SHORTS, []);
+      if (!store.get(KEYS.COMMENTS)) store.set(KEYS.COMMENTS, {});
     }
 
     store.set(KEYS.SEEDED, true);
