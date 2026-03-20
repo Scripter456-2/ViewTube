@@ -353,8 +353,16 @@ function renderPage() {
 
   document.title = `${v.title} — ViewTube`;
 
-  // Set video source
-  if (v.videoUrl) {
+  // Set video source — check localStorage base64 first, then fall back to videoUrl
+  if (v.videoStorageKey) {
+    const base64 = localStorage.getItem(v.videoStorageKey);
+    if (base64) {
+      videoEl.src = base64;
+    } else {
+      // Key missing — video was probably cleared
+      videoEl.closest('.player-wrap').innerHTML += `<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.8);color:var(--text2);font-size:14px;border-radius:var(--player-radius)">Video data was cleared from browser storage</div>`;
+    }
+  } else if (v.videoUrl) {
     videoEl.src = v.videoUrl;
   }
 
