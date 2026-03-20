@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shorts — ViewTube</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080810; --surface: #1a1a2e; --surface2: #22223a;
+    --border: rgba(255,255,255,0.06);
+    --accent: #6c63ff; --accent2: #a78bfa; --accent-glow: rgba(108,99,255,0.3);
+    --red: #ff4757;
+    --text: #f0f0ff; --text2: #a0a0c0; --text3: #5a5a80;
+    --verified: #60a5fa; --gold-v: #f59e0b; --black-v: #e2e2e2;
+    --radius: 14px;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:#000; color:var(--text); font-family:'DM Sans',sans-serif; height:100vh; overflow:hidden; }
+
+  /* TOPBAR */
+  .topbar { position:fixed; top:0; left:0; right:0; z-index:200; height:60px; background:rgba(8,8,16,0.7); backdrop-filter:blur(20px); display:flex; align-items:center; gap:16px; padding:0 20px; border-bottom:1px solid rgba(255,255,255,0.05); }
+  .logo { display:flex; align-items:center; gap:8px; text-decoration:none; }
+  .logo-icon { width:32px; height:32px; background:linear-gradient(135deg,var(--accent),var(--red)); border-radius:8px; display:flex; align-items:center; justify-content:center; }
+  .logo-icon svg { width:18px; height:18px; fill:white; }
+  .logo-text { font-family:'Syne',sans-serif; font-weight:800; font-size:18px; color:var(--text); }
+  .logo-text span { color:var(--accent2); }
+  .topbar-center { flex:1; display:flex; justify-content:center; }
+  .shorts-label { font-family:'Syne',sans-serif; font-size:20px; font-weight:800; display:flex; align-items:center; gap:8px; }
+  .shorts-label svg { color:var(--red); }
+  .topbar-right { display:flex; gap:10px; align-items:center; }
+  .back-btn { text-decoration:none; color:var(--text2); background:var(--surface); border:1px solid var(--border); padding:7px 16px; border-radius:20px; font-size:13px; font-weight:500; display:flex; align-items:center; gap:6px; transition:.2s; }
+  .back-btn:hover { color:var(--text); background:var(--surface2); }
+
+  /* SHORTS CONTAINER */
+  .shorts-container { height:100vh; overflow-y:scroll; scroll-snap-type:y mandatory; scrollbar-width:none; }
+  .shorts-container::-webkit-scrollbar { display:none; }
+
+  /* EACH SHORT */
+  .short-item {
+    height:100vh;
+    scroll-snap-align:start;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+  }
+
+  /* VIDEO PLAYER */
+  .short-player-wrap {
+    position:relative;
+    height:100vh;
+    max-height:100vh;
+    aspect-ratio:9/16;
+    background:#000;
+    border-radius:0;
+    overflow:hidden;
+  }
+  @media(min-width:600px) {
+    .short-player-wrap {
+      height:calc(100vh - 60px);
+      margin-top:60px;
+      border-radius:var(--radius);
+      max-height:900px;
+    }
+  }
+  .short-video { width:100%; height:100%; object-fit:cover; cursor:pointer; }
+
+  /* GRADIENT OVERLAY */
+  .short-gradient-top { position:absolute; top:0; left:0; right:0; height:180px; background:linear-gradient(to bottom, rgba(0,0,0,0.6), transparent); pointer-events:none; }
+  .short-gradient-bottom { position:absolute; bottom:0; left:0; right:0; height:280px; background:linear-gradient(to top, rgba(0,0,0,0.85), transparent); pointer-events:none; }
+
+  /* PROGRESS BAR */
+  .short-progress { position:absolute; top:0; left:0; right:0; height:3px; z-index:10; }
+  .short-progress-fill { height:100%; background:var(--accent); transition:width 0.1s linear; }
+
+  /* BOTTOM INFO */
+  .short-info { position:absolute; bottom:24px; left:16px; right:80px; z-index:10; }
+  .short-channel-row { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+  .short-channel-avatar { width:40px; height:40px; border-radius:50%; overflow:hidden; border:2px solid white; background:var(--surface); }
+  .short-channel-avatar img { width:100%; height:100%; object-fit:cover; }
+  .short-channel-name { font-weight:700; font-size:15px; display:flex; align-items:center; gap:5px; }
+  .short-follow-btn { background:white; color:#000; border:none; padding:5px 14px; border-radius:20px; font-size:12px; font-weight:700; cursor:pointer; margin-left:8px; transition:.2s; }
+  .short-follow-btn:hover { background:var(--accent); color:white; }
+  .short-follow-btn.following { background:transparent; color:white; border:1px solid rgba(255,255,255,0.5); }
+  .short-title { font-size:14px; line-height:1.4; color:rgba(255,255,255,0.9); }
+
+  /* ACTIONS SIDEBAR */
+  .short-actions { position:absolute; right:12px; bottom:80px; z-index:10; display:flex; flex-direction:column; gap:20px; align-items:center; }
+  .action-item { display:flex; flex-direction:column; align-items:center; gap:4px; cursor:pointer; }
+  .action-icon { width:48px; height:48px; background:rgba(255,255,255,0.12); backdrop-filter:blur(8px); border-radius:50%; display:flex; align-items:center; justify-content:center; transition:.2s; border:none; color:white; }
+  .action-icon:hover { background:rgba(255,255,255,0.25); transform:scale(1.1); }
+  .action-icon.liked { background:var(--accent); }
+  .action-count { font-size:12px; font-weight:600; color:rgba(255,255,255,0.9); }
+
+  /* COMMENTS PANEL */
+  .comments-panel {
+    position:fixed; bottom:0; left:50%; transform:translateX(-50%);
+    width:min(100vw, 420px);
+    height:70vh;
+    background:var(--bg);
+    border-radius:20px 20px 0 0;
+    z-index:300;
+    display:flex; flex-direction:column;
+    transform:translateX(-50%) translateY(100%);
+    transition:.35s cubic-bezier(.4,0,.2,1);
+    border-top:1px solid var(--border);
+  }
+  .comments-panel.open { transform:translateX(-50%) translateY(0); }
+  .comments-panel-header { display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border-bottom:1px solid var(--border); }
+  .comments-panel-title { font-family:'Syne',sans-serif; font-weight:700; font-size:16px; }
+  .close-panel-btn { background:none; border:none; color:var(--text2); cursor:pointer; padding:4px; }
+  .comments-scroll { flex:1; overflow-y:auto; padding:16px 20px; scrollbar-width:thin; scrollbar-color:var(--surface2) transparent; }
+  .panel-comment { display:flex; gap:10px; margin-bottom:16px; }
+  .panel-c-avatar { width:32px; height:32px; border-radius:50%; overflow:hidden; flex-shrink:0; background:var(--surface); }
+  .panel-c-avatar img { width:100%; height:100%; object-fit:cover; }
+  .panel-c-body { flex:1; }
+  .panel-c-user { font-size:13px; font-weight:600; margin-bottom:2px; }
+  .panel-c-text { font-size:13px; color:var(--text2); line-height:1.4; }
+  .panel-c-time { font-size:11px; color:var(--text3); margin-top:2px; }
+  .panel-input-row { padding:12px 16px; border-top:1px solid var(--border); display:flex; gap:10px; align-items:center; }
+  .panel-input { flex:1; background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:8px 16px; color:var(--text); font-family:'DM Sans',sans-serif; font-size:13px; outline:none; }
+  .panel-send-btn { background:var(--accent); border:none; color:white; padding:8px 16px; border-radius:20px; cursor:pointer; font-weight:600; font-size:13px; }
+
+  /* OVERLAY FOR COMMENTS */
+  .overlay { position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:250; display:none; backdrop-filter:blur(4px); }
+  .overlay.visible { display:block; }
+
+  /* PAUSE ICON */
+  .pause-icon-overlay { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; pointer-events:none; opacity:0; transition:.2s; z-index:5; }
+  .pause-icon-overlay.show { opacity:1; }
+  .pause-circle { width:80px; height:80px; background:rgba(0,0,0,0.5); border-radius:50%; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(8px); }
+
+  /* NAV ARROWS */
+  .short-nav { position:fixed; right:20px; top:50%; transform:translateY(-50%); display:flex; flex-direction:column; gap:12px; z-index:150; }
+  @media(max-width:700px) { .short-nav { display:none; } }
+  .nav-arrow { width:44px; height:44px; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.15); border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; color:white; backdrop-filter:blur(8px); transition:.2s; }
+  .nav-arrow:hover { background:rgba(255,255,255,0.2); }
+
+  /* BADGE */
+  .badge { display:inline-flex; align-items:center; }
+  .badge-verified { color:var(--verified); }
+  .badge-gold { color:var(--gold-v); }
+  .badge-black { color:var(--black-v); }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar" id="topbar">
+  <div style="display:flex;align-items:center;gap:10px;min-width:200px">
+    <a href="index.html" style="display:flex;align-items:center;gap:8px;text-decoration:none">
+      <div style="width:32px;height:32px;background:linear-gradient(135deg,#6c63ff,#ff4757);border-radius:8px;display:flex;align-items:center;justify-content:center"><svg width="18" height="18" fill="white" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+      <span style="font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:#f0f0ff">View<span style="color:#a78bfa">Tube</span></span>
+    </a>
+  </div>
+  <div class="topbar-center">
+    <div class="shorts-label">
+      <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>
+      Shorts
+    </div>
+  </div>
+  <div class="topbar-right" id="topbarRight">
+    <a href="index.html" class="back-btn">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>
+      Back
+    </a>
+  </div>
+</header>
+
+<!-- NAV ARROWS -->
+<div class="short-nav">
+  <button class="nav-arrow" onclick="prevShort()">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M18 15l-6-6-6 6"/></svg>
+  </button>
+  <button class="nav-arrow" onclick="nextShort()">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+  </button>
+</div>
+
+<!-- SHORTS CONTAINER -->
+<div class="shorts-container" id="shortsContainer"></div>
+
+<!-- COMMENTS PANEL -->
+<div class="overlay" id="commentsOverlay" onclick="closeComments()"></div>
+<div class="comments-panel" id="commentsPanel">
+  <div class="comments-panel-header">
+    <div class="comments-panel-title" id="commentPanelTitle">Comments</div>
+    <button class="close-panel-btn" onclick="closeComments()">
+      <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <div class="comments-scroll" id="commentsPanelList"></div>
+  <div class="panel-input-row">
+    <input class="panel-input" type="text" placeholder="Add a comment..." id="panelCommentInput" onkeydown="if(event.key==='Enter')submitPanelComment()">
+    <button class="panel-send-btn" onclick="submitPanelComment()">Post</button>
+  </div>
+</div>
+
+<script src="vt-auth.js"></script>
+<script>
+let shorts = [], channels = [], comments = {};
+let currentIndex = 0;
+let followedChannels = {};
+let likedShorts = {};
+let panelComments = {};
+
+const params  = new URLSearchParams(location.search);
+const startId = params.get('id');
+
+async function loadData() {
+  await VT.initSeedData();
+
+  // Inject auth link in topbar right
+  const user = VT.currentUser();
+  const tr = document.getElementById('topbarRight');
+  if (user) {
+    tr.innerHTML = `
+      <a href="index.html" class="back-btn" style="margin-right:4px">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>
+        Back
+      </a>
+      <img src="${user.avatar}" onclick="VT.logout()" title="Sign out (${user.displayName||user.username})" style="width:32px;height:32px;border-radius:50%;cursor:pointer;border:2px solid var(--border);object-fit:cover" onerror="this.style.background='var(--accent)'">`;
+  } else {
+    tr.innerHTML = `
+      <a href="index.html" class="back-btn">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>
+        Back
+      </a>
+      <a href="login.html" style="background:var(--accent);color:white;text-decoration:none;padding:7px 16px;border-radius:20px;font-size:13px;font-weight:600;margin-left:8px">Sign In</a>`;
+  }
+
+  channels = VT.getChannels();
+  try { shorts = JSON.parse(localStorage.getItem('vt_shorts')) || await fetch('shorts.json').then(r => r.json()); } catch { shorts = []; }
+  try { comments = JSON.parse(localStorage.getItem('vt_comments')) || {}; } catch { comments = {}; }
+
+  renderShorts();
+  if (startId) {
+    const idx = shorts.findIndex(s => s.id === startId);
+    if (idx > 0) setTimeout(() => scrollToIndex(idx), 150);
+  }
+}
+
+function getChannel(id) { return channels.find(c => c.id === id) || {}; }
+
+function renderShorts() {
+  const container = document.getElementById('shortsContainer');
+  container.innerHTML = shorts.map((s, i) => {
+    const ch = getChannel(s.channelId);
+    return `<div class="short-item" data-index="${i}" id="short-${i}">
+      <div class="short-player-wrap">
+        <div class="short-gradient-top"></div>
+        <div class="short-gradient-bottom"></div>
+        <div class="short-progress"><div class="short-progress-fill" id="prog-${i}" style="width:0%"></div></div>
+        <video class="short-video" id="vid-${i}" loop muted playsinline preload="none"
+          poster="${s.thumbnail}"
+          onclick="toggleShortPlay(${i})"
+          ontimeupdate="updateProgress(${i})"
+          onloadeddata="onVideoLoad(${i})">
+          <source src="${s.videoUrl}" type="video/mp4">
+        </video>
+        <div class="pause-icon-overlay" id="pauseOverlay-${i}">
+          <div class="pause-circle"><svg width="32" height="32" fill="white" viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg></div>
+        </div>
+        <!-- INFO -->
+        <div class="short-info">
+          <div class="short-channel-row">
+            <div class="short-channel-avatar"><img src="${ch.avatar || ''}" alt="${ch.name || ''}" onerror="this.style.background='var(--accent)'"></div>
+            <div class="short-channel-name">
+              <a href="channel.html?id=${ch.id}" style="color:inherit;text-decoration:none">${ch.name || 'Unknown'}</a>
+              ${VT.badgeHTML(ch, 13)}
+            </div>
+            <button class="short-follow-btn ${followedChannels[s.id] ? 'following' : ''}" id="follow-${s.id}" onclick="toggleFollow('${s.id}','${ch.id}',this)">${followedChannels[s.id] ? 'Following' : 'Follow'}</button>
+          </div>
+          <div class="short-title">${s.title}</div>
+        </div>
+        <!-- ACTIONS -->
+        <div class="short-actions">
+          <div class="action-item">
+            <button class="action-icon ${likedShorts[s.id] ? 'liked' : ''}" id="likeBtn-${s.id}" onclick="toggleLike('${s.id}',this,'likeCount-${s.id}')">
+              <svg width="22" height="22" fill="${likedShorts[s.id] ? 'white' : 'none'}" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/></svg>
+            </button>
+            <span class="action-count" id="likeCount-${s.id}">${fmtNum(s.likes)}</span>
+          </div>
+          <div class="action-item">
+            <button class="action-icon" onclick="openComments('${s.id}')">
+              <svg width="22" height="22" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            </button>
+            <span class="action-count">Comment</span>
+          </div>
+          <div class="action-item">
+            <button class="action-icon">
+              <svg width="22" height="22" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            </button>
+            <span class="action-count">Share</span>
+          </div>
+          <div class="action-item" style="margin-top:4px">
+            <a href="channel.html?id=${ch.id}" style="display:block;width:40px;height:40px;border-radius:50%;overflow:hidden;border:2px solid white;background:var(--surface)">
+              <img src="${ch.avatar || ''}" style="width:100%;height:100%;object-fit:cover" onerror="this.style.background='var(--accent)'">
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // IntersectionObserver for autoplay
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const idx = parseInt(entry.target.dataset.index);
+      const vid = document.getElementById(`vid-${idx}`);
+      if (entry.isIntersecting) {
+        currentIndex = idx;
+        vid.load();
+        vid.play().catch(() => {});
+      } else {
+        vid.pause();
+        vid.currentTime = 0;
+        document.getElementById(`prog-${idx}`).style.width = '0%';
+      }
+    });
+  }, { threshold: 0.7 });
+
+  document.querySelectorAll('.short-item').forEach(el => observer.observe(el));
+}
+
+function updateProgress(i) {
+  const vid = document.getElementById(`vid-${i}`);
+  if (!vid || !vid.duration) return;
+  document.getElementById(`prog-${i}`).style.width = (vid.currentTime / vid.duration * 100) + '%';
+}
+function onVideoLoad(i) { document.getElementById(`vid-${i}`)?.play().catch(() => {}); }
+
+function toggleShortPlay(i) {
+  const vid = document.getElementById(`vid-${i}`);
+  const ov  = document.getElementById(`pauseOverlay-${i}`);
+  if (vid.paused) { vid.play(); ov.classList.remove('show'); }
+  else            { vid.pause(); ov.classList.add('show'); }
+}
+
+function toggleFollow(shortId, channelId, btn) {
+  const user = VT.currentUser();
+  if (!user) { window.location.href = 'login.html?redirect=watchshorts.html'; return; }
+  followedChannels[shortId] = !followedChannels[shortId];
+  btn.textContent = followedChannels[shortId] ? 'Following' : 'Follow';
+  btn.className   = 'short-follow-btn' + (followedChannels[shortId] ? ' following' : '');
+  // Also update real subscription
+  VT.toggleSubscribe(user.id, channelId);
+}
+
+function toggleLike(id, btn, countId) {
+  const user = VT.currentUser();
+  likedShorts[id] = !likedShorts[id];
+  btn.classList.toggle('liked', likedShorts[id]);
+  const icon = btn.querySelector('svg');
+  if (icon) icon.setAttribute('fill', likedShorts[id] ? 'white' : 'none');
+  const s = shorts.find(s => s.id === id);
+  if (s) document.getElementById(countId).textContent = fmtNum(s.likes + (likedShorts[id] ? 1 : 0));
+}
+
+function fmtNum(n) {
+  if (typeof n === 'string') return n;
+  return n >= 1000000 ? (n / 1000000).toFixed(1) + 'M' : n >= 1000 ? (n / 1000).toFixed(0) + 'K' : String(n || 0);
+}
+
+function openComments(shortId) {
+  const panel   = document.getElementById('commentsPanel');
+  const overlay = document.getElementById('commentsOverlay');
+  const list    = document.getElementById('commentsPanelList');
+  const title   = document.getElementById('commentPanelTitle');
+  const stored  = panelComments[shortId] || [];
+  const seeded  = comments[shortId] || [];
+  const all     = [...stored, ...seeded];
+  title.textContent = `${all.length} Comments`;
+  list.innerHTML = all.length ? all.map(c => `
+    <div class="panel-comment">
+      <div class="panel-c-avatar"><img src="${c.avatar || ''}" alt="${c.user}" onerror="this.style.background='var(--accent)'"></div>
+      <div class="panel-c-body">
+        <div class="panel-c-user">${c.user}</div>
+        <div class="panel-c-text">${c.text}</div>
+        <div class="panel-c-time">${c.time || 'Just now'}</div>
+      </div>
+    </div>`).join('')
+    : `<div style="text-align:center;padding:40px;color:var(--text3)">No comments yet. Be first!</div>`;
+  panel.dataset.shortId = shortId;
+  panel.classList.add('open');
+  overlay.classList.add('visible');
+}
+
+function closeComments() {
+  document.getElementById('commentsPanel').classList.remove('open');
+  document.getElementById('commentsOverlay').classList.remove('visible');
+}
+
+function submitPanelComment() {
+  const user  = VT.currentUser();
+  const input = document.getElementById('panelCommentInput');
+  const text  = input.value.trim();
+  if (!text) return;
+  if (!user) { window.location.href = 'login.html?redirect=watchshorts.html'; return; }
+  const shortId = document.getElementById('commentsPanel').dataset.shortId;
+  if (!panelComments[shortId]) panelComments[shortId] = [];
+  panelComments[shortId].unshift({ user: user.displayName || user.username, text, time: 'Just now', avatar: user.avatar });
+  input.value = '';
+  openComments(shortId);
+}
+
+function scrollToIndex(i) { document.getElementById(`short-${i}`)?.scrollIntoView({ behavior: 'smooth' }); }
+function nextShort()      { if (currentIndex < shorts.length - 1) scrollToIndex(currentIndex + 1); }
+function prevShort()      { if (currentIndex > 0) scrollToIndex(currentIndex - 1); }
+
+document.addEventListener('keydown', e => {
+  if (e.code === 'ArrowDown') nextShort();
+  if (e.code === 'ArrowUp')   prevShort();
+  if (e.code === 'Space')     { e.preventDefault(); toggleShortPlay(currentIndex); }
+  if (e.code === 'Escape')    closeComments();
+});
+
+loadData();
+</script>
+</body>
+</html>

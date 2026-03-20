@@ -1,0 +1,43 @@
+{
+  "v1": [
+    { "id": "c1", "user": "CodeWitch99", "avatar": "https://api.dicebear.com/7.x/thumbs/svg?seed=CodeWitch", "text": "This is honestly the best neural network tutorial I've ever seen. No fluff, just raw knowledge. 🔥", "likes": 4821, "time": "2 days ago", "replies": [
+      { "id": "c1r1", "user": "ByteHunter", "avatar": "https://api.dicebear.com/7.x/thumbs/svg?seed=ByteHunter", "text": "Agreed. Every other tutorial skips the math part. This actually explains it.", "likes": 932, "time": "1 day ago" },
+      { "id": "c1r2", "user": "NeuralNomad", "avatar": "https://api.dicebear.com/7.x/thumbs/svg?seed=NeuralNomad", "text": "The backpropagation explanation at 14:22 finally made it click for me after YEARS.", "likes": 711, "time": "1 day ago" }
+    ]},
+    { "id": "c2", "user": "VoidArchitect", "avatar": "https://api.dicebear.com/7.x/thumbs/svg?seed=VoidArchitect", "text": "Paused 47 times. Worth every second.", "likes": 3104, "time": "3 days ago", "replies": [] },
+    { "id": "c3", "user": "SynthFox", "avatar": "https://api.dicebear.com/7.x/thumbs/svg?seed=SynthFox", "text": "Can we talk about how clean this guy's code is? Actual production quality.", "likes": 1876, "time": "2 days ago", "replies": [
+      { "id": "c3r1", "user": "GhostCompiler", "avatar": "https://api.dicebear.com/7.x/thumbs/svg?seed=GhostCompiler", "text": "Right?? Every variable name is meaningful. This is what I show juniors as an example.", "likes": 422, "time": "1 day ago" }
+    ]}
+  ],
+  "v2": [
+    { "id": "c4", "user": "NightDriver_X", "avatar": "https://api.dicebear.com/7.x/thumbs/svg?seed=NightDriver", "text": "I've been listening to this on repeat for 3 days. My productivity just tripled.", "likes": 6721, "time": "6 days ago", "replies": [] },
+    { "id": "c5", "user": "RetroNeon", "avatar": "https://api.dicebear.com/7.x/thumbs/svg?seed=RetroNeon", "text": "The transition at 28:00 is absolutely filthy. Chef's kiss.", "likes": 2034, "time": "5 days ago", "replies": [
+      { "id": "c5r1", "user": "WaveRider88", "avatar": "https://api.dicebear.com/7.x/thumbs/svg?seed=WaveRider", "text": "I was just about to comment this LOL", "likes": 503, "time": "4 days ago" }
+    ]}
+  ],
+  "v3": [
+    { "id": "c6", "user": "ShadowMapper", "avatar": "https://api.dicebear.com/7.x/thumbs/svg?seed=ShadowMapper", "text": "This changed how I think about the internet entirely. Genuinely unsettling in the best way.", "likes": 14200, "time": "10 days ago", "replies": [] },
+    { "id": "c7", "user": "PhreakZone", "avatar": "https://api.dicebear.com/7.x/thumbs/svg?seed=PhreakZone", "text": "The production quality here rivals Netflix documentaries. Incredible work.", "likes": 8901, "time": "11 days ago", "replies": [
+      { "id": "c7r1", "user": "LensFlare99", "avatar": "https://api.dicebear.com/7.x/thumbs/svg?seed=LensFlare", "text": "Absolutely. The cinematography is insane for a YouTube video.", "likes": 2103, "time": "10 days ago" }
+    ]}
+  ],
+  "v4": [
+    { "id": "c8", "user": "MinimalMind", "avatar": "https://api.dicebear.com/7.x/thumbs/svg?seed=MinimalMind", "text": "I've watched this 4 times and I still find new details. The concrete textures 🤌", "likes": 1234, "time": "4 days ago", "replies": [] }
+  ],
+  "v5": [
+    { "id": "c9", "user": "CipherBreaker", "avatar": "https://api.dicebear.com/7.x/thumbs/svg?seed=CipherBreaker", "text": "The timeline breakdown at 18:00 should be required watching for every developer alive.", "likes": 9823, "time": "3 days ago", "replies": [
+      { "id": "c9r1", "user": "QuantumLeap77", "avatar": "https://api.dicebear.com/7.x/thumbs/svg?seed=QuantumLeap", "text": "Sending this to every person I know in security. This is an alarm bell.", "likes": 3102, "time": "2 days ago" }
+    ]}
+  ],
+  "v6": [
+    { "id": "c10", "user": "FilmGrain42", "avatar": "https://api.dicebear.com/7.x/thumbs/svg?seed=FilmGrain", "text": "The fact that this looks BETTER than 4K HD editing is insane. Old gear has soul.", "likes": 5602, "time": "5 days ago", "replies": [] }
+  ],
+  "v7": [
+    { "id": "c11", "user": "PixelDrift", "avatar": "https://api.dicebear.com/7.x/thumbs/svg?seed=PixelDrift", "text": "Finally someone explains the difference between dark mode and actually good dark mode.", "likes": 7104, "time": "9 days ago", "replies": [] }
+  ],
+  "v8": [
+    { "id": "c12", "user": "NightOwl_Zara", "avatar": "https://api.dicebear.com/7.x/thumbs/svg?seed=NightOwlZara", "text": "Seoul at 1:24:00 made me book a flight immediately.", "likes": 12300, "time": "2 weeks ago", "replies": [
+      { "id": "c12r1", "user": "WanderingByte", "avatar": "https://api.dicebear.com/7.x/thumbs/svg?seed=WanderingByte", "text": "Same. I leave in 2 months. No regrets.", "likes": 4801, "time": "2 weeks ago" }
+    ]}
+  ]
+}

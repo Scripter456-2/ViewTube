@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ViewTube — Watch Anything</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080810;
+    --bg2: #0f0f1a;
+    --bg3: #14141f;
+    --surface: #1a1a2e;
+    --surface2: #22223a;
+    --border: rgba(255,255,255,0.06);
+    --accent: #6c63ff;
+    --accent2: #a78bfa;
+    --accent-glow: rgba(108,99,255,0.3);
+    --red: #ff4757;
+    --gold: #ffd700;
+    --text: #f0f0ff;
+    --text2: #a0a0c0;
+    --text3: #5a5a80;
+    --verified: #60a5fa;
+    --gold-v: #f59e0b;
+    --black-v: #e2e2e2;
+    --radius: 12px;
+    --sidebar: 240px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* TOPBAR */
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    height: 60px;
+    background: rgba(8,8,16,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 16px;
+    padding: 0 20px;
+  }
+  .topbar-left { display: flex; align-items: center; gap: 12px; min-width: var(--sidebar); }
+  .menu-btn { background: none; border: none; color: var(--text2); cursor: pointer; padding: 8px; border-radius: 8px; display: flex; transition: .2s; }
+  .menu-btn:hover { background: var(--surface); color: var(--text); }
+  .logo { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+  .logo-icon { width: 32px; height: 32px; background: linear-gradient(135deg, var(--accent), var(--red)); border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+  .logo-icon svg { width: 18px; height: 18px; fill: white; }
+  .logo-text { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 18px; color: var(--text); letter-spacing: -0.5px; }
+  .logo-text span { color: var(--accent2); }
+
+  .search-wrap { flex: 1; max-width: 600px; margin: 0 auto; display: flex; gap: 0; }
+  .search-input {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-right: none;
+    color: var(--text);
+    padding: 0 16px;
+    height: 38px;
+    border-radius: var(--radius) 0 0 var(--radius);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: .2s;
+  }
+  .search-input:focus { border-color: var(--accent); background: var(--surface2); }
+  .search-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text2);
+    height: 38px; width: 50px;
+    border-radius: 0 var(--radius) var(--radius) 0;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: .2s;
+  }
+  .search-btn:hover { background: var(--accent); color: white; border-color: var(--accent); }
+
+  .topbar-right { display: flex; align-items: center; gap: 10px; margin-left: auto; }
+  .icon-btn { background: none; border: none; color: var(--text2); cursor: pointer; padding: 8px; border-radius: 8px; display: flex; transition: .2s; position: relative; }
+  .icon-btn:hover { background: var(--surface); color: var(--text); }
+  .notif-dot { position: absolute; top: 6px; right: 6px; width: 8px; height: 8px; background: var(--red); border-radius: 50%; border: 2px solid var(--bg); }
+  .avatar-btn { width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--red)); border: none; cursor: pointer; font-family: 'Syne', sans-serif; font-weight: 700; color: white; font-size: 14px; }
+
+  /* LAYOUT */
+  .layout { display: flex; padding-top: 60px; }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: var(--sidebar);
+    position: fixed; left: 0; top: 60px; bottom: 0;
+    background: var(--bg);
+    border-right: 1px solid var(--border);
+    overflow-y: auto; overflow-x: hidden;
+    padding: 16px 0;
+    transition: .3s;
+    scrollbar-width: thin;
+    scrollbar-color: var(--surface2) transparent;
+  }
+  .sidebar.collapsed { width: 72px; }
+  .sidebar.collapsed .nav-label { display: none; }
+  .sidebar.collapsed .sidebar-section-title { display: none; }
+  .sidebar.collapsed .nav-item { justify-content: center; padding: 10px 0; }
+  .nav-item {
+    display: flex; align-items: center; gap: 14px;
+    padding: 10px 20px;
+    color: var(--text2);
+    text-decoration: none;
+    border-radius: 0;
+    transition: .15s;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none; background: none; width: 100%; text-align: left;
+  }
+  .nav-item:hover { background: var(--surface); color: var(--text); }
+  .nav-item.active { background: var(--surface); color: var(--text); }
+  .nav-item.active svg { color: var(--accent2); }
+  .nav-icon { width: 22px; height: 22px; flex-shrink: 0; }
+  .sidebar-divider { height: 1px; background: var(--border); margin: 12px 16px; }
+  .sidebar-section-title { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; padding: 8px 20px 4px; }
+
+  /* MAIN */
+  .main { margin-left: var(--sidebar); flex: 1; padding: 24px; transition: .3s; min-height: calc(100vh - 60px); }
+  .main.expanded { margin-left: 72px; }
+
+  /* FILTER CHIPS */
+  .filter-bar { display: flex; gap: 8px; margin-bottom: 24px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
+  .filter-bar::-webkit-scrollbar { display: none; }
+  .chip {
+    flex-shrink: 0;
+    padding: 6px 16px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text2);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: .2s;
+    white-space: nowrap;
+  }
+  .chip:hover { border-color: var(--accent); color: var(--text); }
+  .chip.active { background: var(--text); color: var(--bg); border-color: var(--text); }
+
+  /* VIDEO GRID */
+  .video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+
+  .video-card {
+    border-radius: var(--radius);
+    overflow: hidden;
+    cursor: pointer;
+    transition: .2s;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+  .video-card:hover .thumb-wrap { transform: scale(1.02); }
+  .video-card:hover .thumb-overlay { opacity: 1; }
+  .thumb-wrap { position: relative; aspect-ratio: 16/9; overflow: hidden; border-radius: var(--radius); background: var(--surface); transition: .3s; }
+  .thumb-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .thumb-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.3); opacity: 0; transition: .2s; display: flex; align-items: center; justify-content: center; }
+  .play-icon { width: 52px; height: 52px; background: rgba(108,99,255,0.9); border-radius: 50%; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+  .duration-badge {
+    position: absolute; bottom: 8px; right: 8px;
+    background: rgba(0,0,0,0.85); color: white;
+    font-size: 12px; font-weight: 600;
+    padding: 2px 7px; border-radius: 6px;
+    letter-spacing: 0.3px;
+  }
+  .video-info { padding: 12px 4px 8px; display: flex; gap: 10px; }
+  .channel-avatar-sm { width: 36px; height: 36px; border-radius: 50%; overflow: hidden; flex-shrink: 0; background: var(--surface); }
+  .channel-avatar-sm img { width: 100%; height: 100%; object-fit: cover; }
+  .video-meta { flex: 1; min-width: 0; }
+  .video-title { font-size: 14px; font-weight: 600; line-height: 1.4; color: var(--text); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 4px; }
+  .video-channel { font-size: 13px; color: var(--text2); display: flex; align-items: center; gap: 4px; margin-bottom: 2px; }
+  .video-stats { font-size: 12px; color: var(--text3); }
+
+  /* VERIFIED BADGES */
+  .badge { display: inline-flex; align-items: center; flex-shrink: 0; }
+  .badge-verified { color: var(--verified); }
+  .badge-gold { color: var(--gold-v); }
+  .badge-black { color: var(--black-v); }
+
+  /* SECTION HEADERS */
+  .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+  .section-title { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; }
+  .section-link { font-size: 13px; color: var(--accent2); text-decoration: none; }
+  .section-link:hover { text-decoration: underline; }
+
+  /* SHORTS ROW */
+  .shorts-row { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; scrollbar-width: none; margin-bottom: 40px; }
+  .shorts-row::-webkit-scrollbar { display: none; }
+  .short-card {
+    flex-shrink: 0; width: 160px; cursor: pointer; text-decoration: none; color: inherit;
+  }
+  .short-thumb {
+    aspect-ratio: 9/16; border-radius: var(--radius); overflow: hidden; position: relative;
+    background: var(--surface);
+  }
+  .short-thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .short-thumb-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.7), transparent); }
+  .short-views { position: absolute; bottom: 8px; left: 0; right: 0; text-align: center; font-size: 13px; font-weight: 600; }
+  .short-title { font-size: 13px; font-weight: 500; margin-top: 8px; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+  /* TRENDING BADGE */
+  .trending-badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: linear-gradient(135deg, var(--red), #ff6b6b);
+    color: white; font-size: 11px; font-weight: 700;
+    padding: 2px 8px; border-radius: 20px;
+    text-transform: uppercase; letter-spacing: 0.5px;
+    position: absolute; top: 8px; left: 8px;
+  }
+
+  /* SCROLL TO TOP */
+  .scroll-top { position: fixed; bottom: 24px; right: 24px; width: 44px; height: 44px; background: var(--accent); border: none; color: white; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; opacity: 0; transition: .3s; z-index: 50; }
+  .scroll-top.visible { opacity: 1; }
+  .scroll-top:hover { transform: translateY(-3px); box-shadow: 0 8px 20px var(--accent-glow); }
+
+  /* SKELETON */
+  @keyframes shimmer { 0%{background-position:-400px 0} 100%{background-position:400px 0} }
+  .skeleton { background: linear-gradient(90deg, var(--surface) 25%, var(--surface2) 50%, var(--surface) 75%); background-size: 800px 100%; animation: shimmer 1.5s infinite; border-radius: var(--radius); }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .sidebar { display: none; }
+    .main { margin-left: 0 !important; }
+    .topbar-left { min-width: auto; }
+  }
+  @media (max-width: 600px) {
+    .video-grid { grid-template-columns: 1fr; }
+    .main { padding: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar" id="topbar"></header>
+
+<!-- LAYOUT -->
+<div class="layout">
+  <!-- SIDEBAR -->
+  <nav class="sidebar" id="sidebar">
+    <a href="index.html" class="nav-item active">
+      <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span class="nav-label">Home</span>
+    </a>
+    <a href="trending.html" class="nav-item">
+      <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+      <span class="nav-label">Trending</span>
+    </a>
+    <a href="watchshorts.html" class="nav-item">
+      <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18"/></svg>
+      <span class="nav-label">Shorts</span>
+    </a>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section-title">Library</div>
+    <a href="#" class="nav-item">
+      <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+      <span class="nav-label">History</span>
+    </a>
+    <a href="#" class="nav-item">
+      <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+      <span class="nav-label">Watch Later</span>
+    </a>
+    <a href="#" class="nav-item">
+      <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      <span class="nav-label">Liked Videos</span>
+    </a>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section-title">Subscriptions</div>
+    <div id="sidebarChannels"></div>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="main" id="main">
+    <!-- FILTER BAR -->
+    <div class="filter-bar" id="filterBar">
+      <button class="chip active" data-cat="all">All</button>
+      <button class="chip" data-cat="Technology">Technology</button>
+      <button class="chip" data-cat="Music">Music</button>
+      <button class="chip" data-cat="Documentary">Documentary</button>
+      <button class="chip" data-cat="Lifestyle">Lifestyle</button>
+      <button class="chip" data-cat="Film">Film</button>
+    </div>
+
+    <!-- SHORTS SECTION -->
+    <div id="shortsSection">
+      <div class="section-header">
+        <div class="section-title">⚡ Shorts</div>
+        <a href="watchshorts.html" class="section-link">See all →</a>
+      </div>
+      <div class="shorts-row" id="shortsRow"></div>
+    </div>
+
+    <!-- VIDEOS SECTION -->
+    <div class="section-header">
+      <div class="section-title" id="gridTitle">Recommended</div>
+    </div>
+    <div class="video-grid" id="videoGrid"></div>
+  </main>
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+  <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M18 15l-6-6-6 6"/></svg>
+</button>
+
+<script src="vt-auth.js"></script>
+<script>
+let channels = [], videos = [], shorts = [];
+let sidebarOpen = true;
+let activeCategory = 'all';
+
+async function loadData() {
+  await VT.initSeedData();
+  VT.injectTopbarStyles();
+  document.getElementById('topbar').innerHTML = VT.renderTopbar('home');
+  // Re-attach search
+  const si = document.getElementById('searchInput');
+  if (si) {
+    const q = new URLSearchParams(location.search).get('q');
+    if (q) { si.value = q; }
+  }
+
+  channels = VT.getChannels();
+  videos   = VT.getVideos();
+  shorts   = VT.getShorts ? [] : (await fetch('shorts.json').then(r=>r.json()).catch(()=>[]));
+  try { shorts = JSON.parse(localStorage.getItem('vt_shorts')) || await fetch('shorts.json').then(r=>r.json()); } catch { shorts=[]; }
+
+  renderSidebarChannels();
+  renderShorts();
+
+  const q = new URLSearchParams(location.search).get('q');
+  if (q) renderSearch(q); else renderVideos('all');
+}
+
+function renderSearch(q) {
+  const el = document.getElementById('videoGrid');
+  document.getElementById('gridTitle').textContent = `Results for "${q}"`;
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  const filtered = videos.filter(v=>v.title.toLowerCase().includes(q.toLowerCase())||
+    (v.tags||[]).some(t=>t.toLowerCase().includes(q.toLowerCase())));
+  el.innerHTML = filtered.length ? filtered.map(videoCard).join('') :
+    `<div style="grid-column:1/-1;color:var(--text2);padding:40px 0;text-align:center">No results for "<strong>${q}</strong>"</div>`;
+}
+
+function videoCard(v) {
+  const ch = VT.getChannel(v.channelId) || {};
+  return `<a href="watch.html?id=${v.id}" class="video-card">
+    <div class="thumb-wrap">
+      <img src="${v.thumbnail}" alt="${v.title}" loading="lazy">
+      <div class="thumb-overlay"><div class="play-icon"><svg width="22" height="22" fill="white" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
+      ${v.trending?`<span class="trending-badge"><svg width="10" height="10" fill="currentColor" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>Trending</span>`:''}
+      <span class="duration-badge">${v.duration||'0:00'}</span>
+    </div>
+    <div class="video-info">
+      <div class="channel-avatar-sm"><img src="${ch.avatar||''}" alt="${ch.name||''}" onerror="this.style.background='#6c63ff'"></div>
+      <div class="video-meta">
+        <div class="video-title">${v.title}</div>
+        <div class="video-channel"><a href="channel.html?id=${ch.id}" style="color:inherit;text-decoration:none">${ch.name||'Unknown'}</a> ${VT.badgeHTML(ch)}</div>
+        <div class="video-stats">${v.viewsLabel||VT.fmtSubs(v.views||0)} views · ${v.uploadedAgo||''}</div>
+      </div>
+    </div>
+  </a>`;
+}
+
+function renderSidebarChannels() {
+  const el = document.getElementById('sidebarChannels');
+  if (!el) return;
+  el.innerHTML = channels.slice(0,5).map(ch=>`
+    <a href="channel.html?id=${ch.id}" class="nav-item" style="gap:10px">
+      <img src="${ch.avatar}" style="width:28px;height:28px;border-radius:50%;flex-shrink:0" onerror="this.style.background='#6c63ff'">
+      <span class="nav-label" style="font-size:13px">${ch.name}</span>
+    </a>
+  `).join('');
+}
+
+function renderShorts() {
+  const el = document.getElementById('shortsRow');
+  if (!el) return;
+  el.innerHTML = shorts.map(s=>`<a href="watchshorts.html?id=${s.id}" class="short-card">
+    <div class="short-thumb">
+      <img src="${s.thumbnail}" alt="${s.title}" loading="lazy">
+      <div class="short-thumb-overlay"></div>
+      <div class="short-views">${s.views} views</div>
+    </div>
+    <div class="short-title">${s.title}</div>
+  </a>`).join('');
+}
+
+function renderVideos(cat='all') {
+  const el = document.getElementById('videoGrid');
+  const title = document.getElementById('gridTitle');
+  const filtered = cat==='all' ? videos : videos.filter(v=>v.category===cat);
+  title.textContent = cat==='all' ? 'Recommended' : cat;
+  el.innerHTML = filtered.length ? filtered.map(videoCard).join('') :
+    `<div style="grid-column:1/-1;color:var(--text2);padding:40px 0;text-align:center">No videos in this category yet.</div>`;
+}
+
+// FILTER CHIPS
+document.getElementById('filterBar').addEventListener('click', e=>{
+  const chip = e.target.closest('.chip');
+  if (!chip) return;
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  chip.classList.add('active');
+  activeCategory = chip.dataset.cat;
+  renderVideos(activeCategory);
+});
+
+function toggleSidebar() {
+  const sb = document.getElementById('sidebar');
+  const main = document.getElementById('main');
+  sidebarOpen = !sidebarOpen;
+  if (sb) sb.classList.toggle('collapsed', !sidebarOpen);
+  if (main) main.classList.toggle('expanded', !sidebarOpen);
+}
+
+window.addEventListener('scroll', ()=>{
+  document.getElementById('scrollTop').classList.toggle('visible', window.scrollY>400);
+});
+
+loadData();
+</script>
+</body>
+</html>

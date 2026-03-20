@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign In — ViewTube</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#080810; --bg2:#0f0f1a; --surface:#1a1a2e; --surface2:#22223a;
+    --border:rgba(255,255,255,0.07); --accent:#6c63ff; --accent2:#a78bfa;
+    --red:#ff4757; --text:#f0f0ff; --text2:#a0a0c0; --text3:#5a5a80;
+    --radius:14px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;}
+  body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 30% 20%,rgba(108,99,255,0.12),transparent 60%),radial-gradient(ellipse at 70% 80%,rgba(255,71,87,0.08),transparent 60%);pointer-events:none;}
+
+  .logo{display:flex;align-items:center;gap:10px;text-decoration:none;margin-bottom:36px;}
+  .logo-icon{width:40px;height:40px;background:linear-gradient(135deg,var(--accent),var(--red));border-radius:10px;display:flex;align-items:center;justify-content:center;}
+  .logo-icon svg{width:22px;height:22px;fill:white;}
+  .logo-text{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;color:var(--text);}
+  .logo-text span{color:var(--accent2);}
+
+  .card{width:100%;max-width:420px;background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:36px;}
+  .card-title{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;margin-bottom:6px;}
+  .card-sub{font-size:14px;color:var(--text2);margin-bottom:28px;}
+
+  .field{margin-bottom:18px;}
+  .field label{display:block;font-size:13px;font-weight:600;color:var(--text2);margin-bottom:6px;}
+  .field input{width:100%;background:var(--surface);border:1px solid var(--border);color:var(--text);padding:12px 16px;border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:.2s;}
+  .field input:focus{border-color:var(--accent);background:var(--surface2);}
+  .field input::placeholder{color:var(--text3);}
+
+  .pw-wrap{position:relative;}
+  .pw-wrap input{padding-right:44px;}
+  .pw-toggle{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text3);cursor:pointer;display:flex;padding:4px;}
+  .pw-toggle:hover{color:var(--text2);}
+
+  .submit-btn{width:100%;background:linear-gradient(135deg,var(--accent),#5a52e0);color:white;border:none;padding:14px;border-radius:var(--radius);font-family:'Syne',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:.2s;margin-top:8px;}
+  .submit-btn:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(108,99,255,0.35);}
+  .submit-btn:active{transform:none;}
+  .submit-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+
+  .error-box{background:rgba(255,71,87,0.1);border:1px solid rgba(255,71,87,0.3);color:#ff6b7a;font-size:13px;padding:12px 16px;border-radius:10px;margin-bottom:16px;display:none;}
+  .error-box.show{display:block;}
+
+  .divider{display:flex;align-items:center;gap:12px;margin:24px 0;color:var(--text3);font-size:13px;}
+  .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border);}
+
+  .switch-link{text-align:center;font-size:14px;color:var(--text2);}
+  .switch-link a{color:var(--accent2);text-decoration:none;font-weight:600;}
+  .switch-link a:hover{text-decoration:underline;}
+</style>
+</head>
+<body>
+<a href="index.html" class="logo">
+  <div class="logo-icon"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+  <span class="logo-text">View<span>Tube</span></span>
+</a>
+
+<div class="card">
+  <div class="card-title">Welcome back</div>
+  <div class="card-sub">Sign in to your ViewTube account</div>
+
+  <div class="error-box" id="errorBox"></div>
+
+  <div class="field">
+    <label>Email address</label>
+    <input type="email" id="email" placeholder="you@example.com" autocomplete="email">
+  </div>
+  <div class="field">
+    <label>Password</label>
+    <div class="pw-wrap">
+      <input type="password" id="password" placeholder="Your password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+      <button class="pw-toggle" onclick="togglePw('password',this)" type="button">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <button class="submit-btn" id="loginBtn" onclick="doLogin()">Sign In</button>
+
+  <div class="divider">or</div>
+  <div class="switch-link">Don't have an account? <a href="register.html">Create one</a></div>
+</div>
+
+<script src="vt-auth.js"></script>
+<script>
+// Redirect if already logged in
+if (VT.currentUser()) {
+  const redir = new URLSearchParams(location.search).get('redirect') || 'index.html';
+  window.location.href = redir;
+}
+
+function showError(msg) {
+  const b = document.getElementById('errorBox');
+  b.textContent = msg;
+  b.classList.add('show');
+}
+
+function doLogin() {
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+  const btn = document.getElementById('loginBtn');
+
+  if (!email || !password) { showError('Please fill in all fields.'); return; }
+  btn.disabled = true; btn.textContent = 'Signing in…';
+  document.getElementById('errorBox').classList.remove('show');
+
+  setTimeout(() => {
+    const result = VT.login({ email, password });
+    if (result.ok) {
+      const redir = new URLSearchParams(location.search).get('redirect') || 'index.html';
+      window.location.href = redir;
+    } else {
+      showError(result.error);
+      btn.disabled = false; btn.textContent = 'Sign In';
+    }
+  }, 300);
+}
+
+function togglePw(id, btn) {
+  const inp = document.getElementById(id);
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+}
+</script>
+</body>
+</html>
