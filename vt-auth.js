@@ -284,14 +284,19 @@ const VT = (() => {
   function getChannelVideos(channelId){ return _allVideos().filter(v => v.channelId === channelId && !v.IsBanned); }
 
   function uploadVideo({ title, description, tags, category, thumbnail, videoUrl, channelId, uploaderId }) {
+    return uploadVideoWithId({ id: 'v_' + uid(), title, description, tags, category, thumbnail, videoUrl, channelId, uploaderId });
+  }
+
+  function uploadVideoWithId({ id, title, description, tags, category, thumbnail, videoUrl, videoStorageKey, channelId, uploaderId }) {
     const vid = {
-      id: 'v_' + uid(),
+      id,
       title: title.trim(),
       description: (description || '').trim(),
       tags: Array.isArray(tags) ? tags : String(tags || '').split(',').map(t => t.trim()).filter(Boolean),
       category: category || 'Other',
-      thumbnail: thumbnail || `https://picsum.photos/seed/${uid()}/640/360`,
+      thumbnail: thumbnail || `https://picsum.photos/seed/${id}/640/360`,
       videoUrl: videoUrl || '',
+      videoStorageKey: videoStorageKey || '',   // key in localStorage holding base64 data
       channelId, uploaderId,
       views: 0, viewsLabel: '0',
       likes: 0, dislikes: 0,
@@ -317,6 +322,11 @@ const VT = (() => {
 
     // Remove from videos array — gone for good in this browser
     store.set(KEYS.VIDEOS, all.filter(v => v.id !== videoId));
+
+    // Also clean up the base64 video data stored separately
+    if (vid.videoStorageKey) {
+      localStorage.removeItem(vid.videoStorageKey);
+    }
 
     // Also clean up associated comments
     const comments = store.get(KEYS.COMMENTS) || {};
@@ -569,7 +579,7 @@ const VT = (() => {
     initSeedData, exportJSON, hardReset,
     currentUser, register, login, logout, requireAuth, getUsers,
     getChannels, getChannel, getChannelByOwner, createChannel, updateChannel,
-    getVideos, getAllVideos, getVideo, getChannelVideos, uploadVideo, deleteVideo, recordView,
+    getVideos, getAllVideos, getVideo, getChannelVideos, uploadVideo, uploadVideoWithId, deleteVideo, recordView,
     isSubscribed, toggleSubscribe, getUserSubs,
     hasLiked, hasDisliked, toggleLike, toggleDislike,
     getVideoComments, addComment, addReply,
